@@ -17,6 +17,7 @@ import std.experimental.graphic.color.xyz;
 import std.traits: isNumeric, isIntegral, isFloatingPoint, isSigned, TemplateOf;
 import std.typetuple: TypeTuple;
 
+import std.conv;
 
 /**
 Convert between color types.
@@ -233,6 +234,20 @@ unittest
     //...
 }
 
+/**
+ * Create a color from a W3C/X11 color name (as found in Colors Enum in package.d)
+ */
+Color colorFromW3CString(Color = RGB8)(const(char)[] colorName)
+{
+        try
+        {
+            return cast(Color)(cast(RGB8)to!Colors(colorName));
+        }
+        catch(std.conv.ConvException ce)
+        {
+            assert(false, "Invalid W3C Color Name");
+        }
+}
 
 /**
 * Create a color from hex strings in the standard forms: (#/$/0x)rgb/argb/rrggbb/aarrggbb
@@ -288,8 +303,6 @@ Color colorFromString(Color = RGB8)(const(char)[] hex)
     }
     else
     {
-        // TODO: should we look up colors from the W3C color table by name?
-
         assert(false, "Invalid hex string!");
     }
 }
